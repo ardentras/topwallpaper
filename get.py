@@ -13,15 +13,21 @@ link_start = reddit_soup.find("imgur.com/")
 reddit_soup = reddit_soup[link_start:].split("\"")
 imgur_pic = str(reddit_soup[0])
 
-if imgur_pic[10] == "a":
+if imgur_pic[10:12] == "a/" or imgur_pic[10:18] == "gallery/":
     imgur_soup = str(BeautifulSoup(requests.get("http://" + imgur_pic).text,
                                    "html.parser", parse_only=SoupStrainer("img")).prettify("ascii"))
     link_start = imgur_soup.find("i.imgur.com/")
     imgur_soup = imgur_soup[link_start:].split("\"")
-    imgur_pic = "http://" + str(imgur_soup[0])[:-5] + ".jpg"
-else:
+    if (str(imgur_soup[0])[-5] == "s"):
+        imgur_pic = "http://" + str(imgur_soup[0])[:-5] + ".jpg"
+    else:
+        imgur_pic = "http://" + str(imgur_soup[0])[:-4] + ".jpg"
+elif imgur_pic[-4] == ".":
     imgur_pic = "http://" + imgur_pic
+else:
+	imgur_pic = "http://" + imgur_pic + ".jpg"
 
+print(imgur_pic)
 import shutil
 import os
 user_path = str(os.getcwd())
