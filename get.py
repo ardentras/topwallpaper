@@ -1,4 +1,4 @@
-from bs4 import BeautifulSoup
+﻿from bs4 import BeautifulSoup
 from bs4 import SoupStrainer
 import requests
 from datetime import date, timedelta
@@ -30,12 +30,19 @@ else:
 print(imgur_pic)
 import shutil
 import os
+import platform
 user_path = str(os.getcwd())
+currOS = str(platform.system())
 
 picture_req = requests.get(imgur_pic, stream=True, headers=user_agent)
 if picture_req.status_code == 200:
     with open('redditWallpaper-' + today + '.jpg', 'wb') as f:
-        print("Downloading image from", imgur_pic + " to " + user_path + "/redditWallpaper-" + today + ".jpg")
+        if (currOS == "Darwin"):
+            print("Downloading image from", imgur_pic + " to " + user_path + "/redditWallpaper-" + today + ".jpg")
+        elif (currOS == "Windows"):
+            print("Downloading image from", imgur_pic + " to " + user_path + "\\redditWallpaper-" + today + ".jpg")
+        elif (currOS == "Linux"):
+            print("No Linux support yet...")
         picture_req.raw.decode_content = True
         shutil.copyfileobj(picture_req.raw, f)
 
@@ -43,7 +50,13 @@ print("Changing background")
 
 from subprocess import call
 try:
-    status = call("osascript -e \'tell application \"Finder\" to set desktop picture to POSIX file \"" + user_path + "/redditWallpaper-" + today + ".jpg\"\'", shell=True)
+    if (currOS == "Darwin"):
+        status = call("osascript -e \'tell application \"Finder\" to set desktop picture to POSIX file \"" + user_path + "/redditWallpaper-" + today + ".jpg\"\'", shell=True)
+    elif (currOS == "Windows"):
+        status = call("reg add \"HKCU\\Control Panel\\Desktop\" /v Wallpaper /t REG_SZ /d " + user_path + "\\redditWallpaper-" + today + ".jpg\" /f")
+    elif (currOS == "Linux"):
+        print("No Linux support yet...")
+
     if os.path.isfile("redditWallpaper-" + yesterday + ".jpg"):
         print("Deleting yesterday's wallpaper...")
         os.remove(user_path + "/redditWallpaper-" + yesterday + ".jpg")
