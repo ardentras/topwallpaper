@@ -1,4 +1,4 @@
-﻿from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup
 from bs4 import SoupStrainer
 import requests
 from datetime import date, timedelta
@@ -42,7 +42,7 @@ if picture_req.status_code == 200:
         elif (currOS == "Windows"):
             print("Downloading image from", imgur_pic + " to " + user_path + "\\redditWallpaper-" + today + ".jpg")
         elif (currOS == "Linux"):
-            print("No Linux support yet...")
+            print("Downloading image from", imgur_pic + " to " + user_path + "/redditWallpaper-" + today + ".jpg")
         picture_req.raw.decode_content = True
         shutil.copyfileobj(picture_req.raw, f)
 
@@ -55,7 +55,10 @@ try:
     elif (currOS == "Windows"):
         status = call("reg add \"HKCU\\Control Panel\\Desktop\" /v Wallpaper /t REG_SZ /d " + user_path + "\\redditWallpaper-" + today + ".jpg\" /f")
     elif (currOS == "Linux"):
-        print("No Linux support yet...")
+        linux = platform.linux_distribution()
+        currOS = str(linux[0])
+        if (currOS == "debian")
+            status = call("gsettings set org.gnome.desktop.background picture-uri file://" + user_path + "/redditWallpaper-" + today + ".jpg")
 
     if os.path.isfile("redditWallpaper-" + yesterday + ".jpg"):
         print("Deleting yesterday's wallpaper...")
